@@ -1,6 +1,7 @@
 from http.client import HTTPException
 from model import project
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -14,6 +15,10 @@ from database import (
     update_project,
     delete_project
 )
+
+@app.get("/favicon.ico")
+def get_favicon():
+    return FileResponse("./favicon.ico")
 
 @app.get("/")
 async def get_projects():
