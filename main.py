@@ -33,7 +33,7 @@ async def get_all_Client_Aliases():
     response = await fetch_all_client_alias()
     return response
 
-@app.get("/api/ProjectList{Industry_Type}")
+@app.get("/api/ProjectList/{Industry_Type}")
 async def get_projects(Industry_Type):
 
     response = await fetch_all_projects_by_type(Industry_Type)
