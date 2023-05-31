@@ -1,5 +1,7 @@
 from model import project
 import motor.motor_asyncio
+from fastapi import Query
+from typing import List, Union
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:4B7z22thbADwmCYP@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
 
@@ -67,13 +69,15 @@ async def fetch_project_by_name(Project_Name):
     document = await collection.find_one({"Project_Name": Project_Name})
     return document
 
-# async def fetch_project_by_industry(Industry_Type):
-#     projects = []
-#     cursor = collection.find({"Industry_Type": Industry_Type})
-#     async for document in cursor:
-#         projects.append(project(**document))
-#
-#     return projects
+async def fetch_projects(filters: dict) -> List[project]:
+    projects = []
+    query = {}
+    for key, value in filters.items():
+        query[key] = value
+    results = collection.find(query)
+    async for result in results:
+        projects.append(project(**result))
+    return projects
 
 async def fetch_all_projects_by_type(Industry_Type):
     projects = []
@@ -94,7 +98,7 @@ async def fetch_all_projects_by_type(Industry_Type):
 async def create_new_project(project):
     document = project
     result = await collection.insert_one(document)
-    return document
+    return result
 
 async def update_project(Project_Name, data:dict):
     await collection.update_one({"Project_Name": Project_Name},{"$set":data})
