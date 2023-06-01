@@ -98,7 +98,7 @@ async def fetch_all_projects_by_type(Industry_Type):
 async def create_new_project(project):
     document = project
     result = await collection.insert_one(document)
-    return result
+    return document
 
 async def update_project(Project_Name, data:dict):
     await collection.update_one({"Project_Name": Project_Name},{"$set":data})
