@@ -1,7 +1,6 @@
 from model import project
 import motor.motor_asyncio
-from fastapi import Query
-from typing import List, Union
+from typing import List
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:4B7z22thbADwmCYP@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
 
@@ -46,6 +45,25 @@ async def fetch_all_industry_types():
     finally:
         # print(projects)
         return industry_types
+
+async def fetch_types(Type):
+    types = []
+    try:
+        cursor = collection.find({})
+        async for document in cursor:
+            type = document.get(Type)
+            if type not in types:
+                types.append(type)
+    except Exception as e:
+        # Handle the specific exception or log the error
+        print(f"An error occurred while fetching projects: {e}")
+        # You can also raise or return the exception if needed
+        # raise e
+        # return []
+    finally:
+        # print(projects)
+        return types
+
 
 async def fetch_all_client_alias():
     client_aliases = []

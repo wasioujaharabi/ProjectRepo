@@ -26,7 +26,8 @@ from database import (
     create_new_project,
     update_project,
     delete_project,
-    fetch_projects
+    fetch_projects,
+    fetch_types
 )
 
 @app.get("/favicon.ico")
@@ -55,6 +56,11 @@ async def get_all_Client_Aliases():
 async def get_projects(Industry_Type):
 
     response = await fetch_all_projects_by_type(Industry_Type)
+    return response
+
+@app.get("/api/ProjectList/Type/{Type}")
+async def get_types(Type):
+    response = await fetch_types(Type)
     return response
 
 @app.get("/api/ProjectList")
