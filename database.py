@@ -1,6 +1,7 @@
 from model import project
 import motor.motor_asyncio
 from typing import List
+from fastapi.encoders import jsonable_encoder
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:4B7z22thbADwmCYP@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
 
@@ -118,10 +119,22 @@ async def create_new_project(project):
     result = await collection.insert_one(document)
     return document
 
-async def update_project(Project_Name, data:dict):
-    await collection.update_one({"Project_Name": Project_Name},{"$set":data})
-    document = await collection.find_one({"Project_Name":Project_Name})
-    return document
+# async def update_project(Project_Name, data: project):
+#     update_item_encoded = jsonable_encoder(data)
+#     await collection.update_one({"Project_Name": Project_Name},{"$set":update_item_encoded})
+#     document = await collection.find_one({"Project_Name":Project_Name})
+#     return document
+
+async def project_exists(self, project_name):
+    project = await collection.find_one({"Project_Name": project_name})
+    return project is not None
+
+async def update_project(project_name, updated_data):
+    result = await collection.update_one(
+        {"Project_Name": project_name},
+        {"$set": updated_data}
+    )
+    return result.modified_count > 0
 
 
 async def delete_project(Project_Name):

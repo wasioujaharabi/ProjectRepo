@@ -1,12 +1,13 @@
 from http.client import HTTPException
 from model import project
 from fastapi import FastAPI, Query
-from typing import List, Union, Optional
+from typing import Union, Optional
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.encoders import jsonable_encoder
 
 app = FastAPI()
+
 
 origins = ["*"]
 app.add_middleware(
@@ -27,7 +28,8 @@ from database import (
     update_project,
     delete_project,
     fetch_projects,
-    fetch_types
+    fetch_types,
+    project_exists,
 )
 
 @app.get("/favicon.ico")
@@ -130,12 +132,31 @@ async def post_project(Project: project):
         return response
     raise HTTPException(404, "Something went wrong")
 
+
+# async def put_project(Project_Name: str, data: project):
+#     updated_data = data.dict(exclude_unset=True)
+#     response = await update_project(Project_Name, updated_data)
+#     if response:
+#         return response
+#     raise HTTPException(404, "Something went wrong")
+
 @app.put("/api/ProjectList{Project_Name}/update", response_model= project)
-async def put_project(Project_Name: str, data:dict):
-    response = await update_project(Project_Name,data)
-    if response:
-        return response
-    raise HTTPException(404, "Something went wrong")
+async def put_project(Project_Name: str, data: project):
+    # Check if the project exists in the database
+    # if not await project_exists(Project_Name):
+    #     raise HTTPException(status_code=404, detail="Project not found")
+
+    # Update the project
+    updated_data = data.dict(exclude_unset=True)
+    success = await update_project(Project_Name, updated_data)
+
+    if success:
+        # Return the updated project
+        return data
+    else:
+        # Return an error response if the update fails
+        raise HTTPException(status_code=500, detail="Failed to update the project")
+
 
 @app.delete("/api/ProjectList{Project_Name}/remove")
 async def delete_project_by_name(Project_Name):
