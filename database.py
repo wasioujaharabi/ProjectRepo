@@ -125,9 +125,7 @@ async def create_new_project(project):
 #     document = await collection.find_one({"Project_Name":Project_Name})
 #     return document
 
-async def project_exists(self, project_name):
-    project = await collection.find_one({"Project_Name": project_name})
-    return project is not None
+
 
 async def update_project(project_name, updated_data):
     result = await collection.update_one(
@@ -138,5 +136,7 @@ async def update_project(project_name, updated_data):
 
 
 async def delete_project(Project_Name):
+    document = await collection.find_one({"Project_Name": Project_Name}, {'_id': 0})
     await collection.delete_one({"Project_Name": Project_Name})
-    return True
+    print(document)
+    return document

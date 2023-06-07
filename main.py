@@ -1,10 +1,9 @@
-from http.client import HTTPException
 from model import project
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from typing import Union, Optional
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.encoders import jsonable_encoder
+
 
 app = FastAPI()
 
@@ -28,8 +27,7 @@ from database import (
     update_project,
     delete_project,
     fetch_projects,
-    fetch_types,
-    project_exists,
+    fetch_types
 )
 
 @app.get("/favicon.ico")
@@ -162,5 +160,5 @@ async def put_project(Project_Name: str, data: project):
 async def delete_project_by_name(Project_Name):
     response = await delete_project(Project_Name)
     if response:
-        return "Successfully Deleted Project"
+        return response
     raise HTTPException(404, "There is no Project")
