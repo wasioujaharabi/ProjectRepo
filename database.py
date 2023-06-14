@@ -1,9 +1,11 @@
+import json
+
 from model import project
 import motor.motor_asyncio
 from typing import List
-from fastapi.encoders import jsonable_encoder
+from bson import ObjectId,json_util
 
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:4B7z22thbADwmCYP@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
+client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:project@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
 
 database = client.CentralProjectRepo
 collection = database.ProjectList
@@ -127,6 +129,15 @@ async def create_new_project(project):
 
 
 
+# async def update_project(project_name, updated_data:project):
+#     filter_criteria = collection.find_one({"Project_Name": project_name})
+#     update_data = updated_data
+#
+#     result = await collection.update_one(filter_criteria.dict(), {"$set": update_data})
+#
+#     print(result.modified_count)
+#     return result.modified_count > 0
+
 async def update_project(project_name, updated_data):
     result = await collection.update_one(
         {"Project_Name": project_name},
@@ -134,9 +145,6 @@ async def update_project(project_name, updated_data):
     )
     return result.modified_count > 0
 
-
-async def delete_project(Project_Name):
-    document = await collection.find_one({"Project_Name": Project_Name}, {'_id': 0})
-    await collection.delete_one({"Project_Name": Project_Name})
-    print(document)
-    return document
+async def delete_project(id: str):
+    id = ObjectId(id)
+    return json.loads(json_util.dumps(await collection.find_one_and_delete({'_id': id})))

@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from model import project
 from fastapi import FastAPI, Query, HTTPException
 from typing import Union, Optional
@@ -140,12 +141,15 @@ async def post_project(Project: project):
 
 @app.put("/api/ProjectList{Project_Name}/update", response_model= project)
 async def put_project(Project_Name: str, data: project):
+    print(data)
     # Check if the project exists in the database
     # if not await project_exists(Project_Name):
     #     raise HTTPException(status_code=404, detail="Project not found")
 
     # Update the project
-    updated_data = data.dict(exclude_unset=True)
+    updated_data = data.dict()
+
+    print(updated_data)
     success = await update_project(Project_Name, updated_data)
 
     if success:
@@ -157,8 +161,8 @@ async def put_project(Project_Name: str, data: project):
 
 
 @app.delete("/api/ProjectList{Project_Name}/remove")
-async def delete_project_by_name(Project_Name):
-    response = await delete_project(Project_Name)
+async def delete_project_by_name(id):
+    response = await delete_project(id)
     if response:
         return response
     raise HTTPException(404, "There is no Project")
