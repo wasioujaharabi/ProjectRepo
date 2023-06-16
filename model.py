@@ -1,7 +1,9 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, PyObject, Field
 from datetime import datetime
 from typing import Union
+from bson import ObjectId
 class project(BaseModel):
+    id: object = Field(default_factory=ObjectId, alias="_id")
     Sl_No: Union[int,str]
     Project_Timeline: str
     Client_Name: str
@@ -17,6 +19,10 @@ class project(BaseModel):
     PDR: str
     Project_Charter: str
     Remarks: str
+
+    class Config:
+        allow_population_by_field_name = True
+        json_encoders = {ObjectId: str}
 
 @validator('Sl_No', pre=True)
 def allow_none(cls, v):
