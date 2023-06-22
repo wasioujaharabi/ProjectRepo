@@ -4,7 +4,7 @@ from fastapi import FastAPI, Query, HTTPException
 from typing import Union, Optional
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-import json, requests
+# import json, requests
 
 import clickup
 
@@ -244,19 +244,19 @@ async def delete_project_by_name(id):
         return response
     raise HTTPException(404, "There is no Project")
 
-@app.post("api/ProjectList/Sync")
-async def project_sync():
-    list_id = None
-    url = f"https://api.clickup.com/api/v2/list/{list_id}/task"
-    API_KEY = clickup.API_KEY
-
-    payload = ""
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': API_KEY
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-
-    existing_projects = fetch_types("Project_Name")
+# @app.post("api/ProjectList/Sync")
+# async def project_sync():
+#     list_id = None
+#     url = f"https://api.clickup.com/api/v2/list/{list_id}/task"
+#     API_KEY = clickup.API_KEY
+#
+#     payload = ""
+#     headers = {
+#         'Content-Type': 'application/json',
+#         'Authorization': API_KEY
+#     }
+#
+#     response = requests.request("GET", url, headers=headers, data=payload)
+#
+#
+#     existing_projects = fetch_types("Project_Name")
