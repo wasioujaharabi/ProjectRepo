@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 # import json, requests
 
-import clickup
+# import clickup
 
 
 app = FastAPI()
