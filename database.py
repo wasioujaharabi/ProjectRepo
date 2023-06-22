@@ -5,15 +5,15 @@ import motor.motor_asyncio
 from typing import List
 from bson import ObjectId,json_util
 
-# client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:project@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
+client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:project@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
+# client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
 
-# database = client.CentralProjectRepo
-# collection = database.ProjectList
+database = client.CentralProjectRepo
+collection = database.new
 
 #new db and collection
-database = client.projectDirectory
-collection = database.new
+# database = client.projectDirectory
+# collection = database.new
 
 
 async def fetch_all_projects():
