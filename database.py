@@ -1,21 +1,21 @@
 import json
 
-from model import project
+from model_2 import project
 import motor.motor_asyncio
 from typing import List
 from bson import ObjectId,json_util
 
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:project@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
+# client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://wasiou:project@centralprojectrepo.b47wjni.mongodb.net/CentralProjectRepo")
+client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
 
-database = client.CentralProjectRepo
-collection = database.ProjectList
+# database = client.CentralProjectRepo
+# collection = database.ProjectList
 
-# async def fetch_all_projects():
-#     projects = []
-#     cursor = collection.find({})
-#     async for document in cursor:
-#         projects.append(project(**document))
-#     return projects
+#new db and collection
+database = client.projectDirectory
+collection = database.new
+
+
 async def fetch_all_projects():
     projects = []
     try:
@@ -36,7 +36,7 @@ async def fetch_all_industry_types():
     try:
         cursor = collection.find({})
         async for document in cursor:
-            industry_type = document.get("Industry_Type")
+            industry_type = document.get("Industry")
             if industry_type not in industry_types:
                 industry_types.append(industry_type)
     except Exception as e:
@@ -128,7 +128,6 @@ async def create_new_project(project):
 #     return document
 
 
-
 # async def update_project(project_name, updated_data:project):
 #     filter_criteria = collection.find_one({"Project_Name": project_name})
 #     update_data = updated_data
@@ -138,13 +137,20 @@ async def create_new_project(project):
 #     print(result.modified_count)
 #     return result.modified_count > 0
 
-async def update_project(project_name, updated_data):
+
+async def update_project(id, updated_data):
     result = await collection.update_one(
-        {"Project_Name": project_name},
+        {"_id": ObjectId(id)},
         {"$set": updated_data}
     )
     return result.modified_count > 0
 
+
 async def delete_project(id: str):
     id = ObjectId(id)
     return json.loads(json_util.dumps(await collection.find_one_and_delete({'_id': id})))
+
+async def sync_new_project(project):
+    document = project
+    await collection.insert_one(document)
+    return document
